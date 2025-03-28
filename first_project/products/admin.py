@@ -20,6 +20,7 @@ class CustomerAdmin(admin.ModelAdmin):
 class OrderAdmin(admin.ModelAdmin):
     list_display = ('id', 'customer', 'date')
 
+
 @admin.register(OrderDetail)
 class OrderDetailAdmin(admin.ModelAdmin):
     list_display = ('id', 'order', 'product', 'quantity')
