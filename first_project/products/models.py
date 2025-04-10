@@ -20,10 +20,13 @@ class Customer(models.Model):
 
 class Order(models.Model):
     customer = models.ForeignKey(
-        Customer,
-        on_delete=models.CASCADE
+        Customer, 
+        on_delete=models.CASCADE,
     )
     date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Order {self.id} for {self.customer.name}"
 
 class OrderDetail(models.Model):
     order = models.ForeignKey(
