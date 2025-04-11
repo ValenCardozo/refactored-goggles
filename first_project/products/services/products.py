@@ -1,3 +1,7 @@
+from decimal import Decimal
+from typing import List
+
+
 from products.models import Product
 from products.repositories.products import ProductRepository
 
@@ -11,7 +15,7 @@ class ProductService:
     def get_all(self) -> list[Product]:
         return self.product_repository.get_all()
     """
-    
+
     @staticmethod
     def get_all() -> list[Product]:
         return ProductRepository.get_all() 
@@ -36,3 +40,10 @@ class ProductService:
                 price=price,
                 stock=stock,
             )
+
+    @staticmethod
+    def sum_total_price(product_list: List[Product]) -> Decimal:
+        total = Decimal(0)
+        for product in product_list:
+            total += product.price
+        return total

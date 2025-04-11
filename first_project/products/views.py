@@ -6,12 +6,13 @@ from products.services.orders import OrderService
 
 def product_list(request):
     all_products = ProductService.get_all()
+    total_price = ProductService.sum_total_price(product_list=all_products)
     return render(
         request,
         'products/list.html',
         dict(
             products=all_products,
-            otro_atributo='Atributo 2'
+            total_price=total_price,
         )
     )
 
