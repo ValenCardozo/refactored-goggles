@@ -1,38 +1,72 @@
+from django.contrib import messages
 from django.shortcuts import render, get_object_or_404
+from django.views import View
+from django.views.generic import (
+    CreateView,
+    DeleteView,
+    DetailView,
+    ListView,
+)
+from django.urls import reverse_lazy
+from products.models import Product, Order
+from products.forms import ProductForm
 
-from products.models import Product
-from products.services.products import ProductService
-from products.services.orders import OrderService
+class ProductList(ListView):
+    model = Product # Product.objects.all()
+    template_name = 'products/list.html'
+    context_object_name = 'products'
 
-def product_list(request):
-    all_products = ProductService.get_all()
-    total_price = ProductService.sum_total_price(product_list=all_products)
-    return render(
-        request,
-        'products/list.html',
-        dict(
-            products=all_products,
-            total_price=total_price,
+
+class ProductDetail(DetailView):
+    model = Product
+    template_name = 'products/detail.html'
+    context_object_name = 'product'
+    pk_url_kwarg = 'product_id' # Nombre con el que va a encontrar el ID en la URL
+
+
+class ProductDelete(DeleteView):
+    model = Product
+    template_name = "products/delete.html"
+    pk_url_kwarg = 'product_id'
+    success_url = reverse_lazy('product_list') # Nombre con el que va a encontrar el ID en la URL
+
+
+class ProductCreate(View):
+    def get(self, request):
+        return render(request, "products/create.html")
+
+    def post(self, request):
+        name = request.POST.get('name')
+        stock = request.POST.get('stock')
+        price = request.POST.get('price')
+
+        Product.objects.create(
+            name=name,
+            stock=int(stock),
+            price=float(price)
         )
-    )
-
-def product_detail(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
-    return render(
-        request,
-        'products/detail.html',
-        dict(
-            product=product,
+        messages.success(request, 'Producto Creado')
+        return render(
+            request,
+            'products/create.html'
         )
-    )
 
-def order_list(request):
-    all_orders = OrderService.get_all()
-    return render(
-        request,
-        'orders/list.html',
-        dict(
-            orders=all_orders,
-            otro_atributo='Atributo 2'
-        )
-    )
+class ProductCreateView(CreateView):
+    form_class = ProductForm
+    template_name = 'products/create_from_class.html'
+    success_url = reverse_lazy('product_list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Creador de producto'
+        print(context)
+        return context
+
+    def form_valid(self, form):
+        messages.success(self.request, "Producto Creado")
+        return super().form_valid(form)
+
+class OrderList(ListView):
+    model = Order
+    template_name = 'orders/list.html'
+    context_object_name = 'orders'
