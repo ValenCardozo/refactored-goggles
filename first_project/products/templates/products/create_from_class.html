@@ -6,9 +6,10 @@ Crear Producto
 
 {% block content %}
 <h2>{{ title }}</h2>
-<form method="post">
+<form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{form.as_p}}
     <a href="{% url 'product_list' %}"> Volver </a>
+    <button type="submit"> Guardar </button>
 </form>
 {% endblock %}

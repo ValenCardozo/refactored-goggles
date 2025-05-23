@@ -8,6 +8,12 @@
     <li>
         Price: {{ product.price }}
         Stock: {{ product.stock }}
+        {% if product.image %}
+        Image: <img src="{{ product.image.url }}" alt="{{ product.name }}" width="70" height="70" class="d-inline-block align-top">
+        {% else %}
+        No image available.
+        {% endif %}
+        Description: {{ product.description }}
     </li>
 </ul>
 {% endblock %}
