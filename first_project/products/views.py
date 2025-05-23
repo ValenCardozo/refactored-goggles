@@ -51,6 +51,7 @@ class ProductCreate(View):
             'products/create.html'
         )
 
+
 class ProductCreateView(CreateView):
     form_class = ProductForm
     template_name = 'products/create_from_class.html'
@@ -65,6 +66,7 @@ class ProductCreateView(CreateView):
     def form_valid(self, form):
         messages.success(self.request, "Producto Creado")
         return super().form_valid(form)
+
 
 class OrderList(ListView):
     model = Order
