@@ -1,12 +1,35 @@
+from decimal import Decimal as D
 from django.contrib import admin
 
-from products.models import Customer, Order, OrderDetail, Product
+from products.models import (
+    Category,
+    Customer,
+    Order,
+    Product,
+    OrderDetail,
+)
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'price', 'image')
-    list_filter = ('name', 'price')
+    list_display = ('id', 'name', 'price', 'image', 'category')
+    list_filter = ('name', 'category')
     search_fields = ('name', 'description')
+    actions = ['update_price_15']
+
+    def update_price_15(self, request, queryset):
+        for product in queryset:
+            product.price = product.price * D(1.15)
+            product.save()
+        self.message_user(
+            request,
+            "Se proceso correctamente aumento de precios",
+            level='success'
+        )
+
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ('name',)
 
 
 @admin.register(Customer)
